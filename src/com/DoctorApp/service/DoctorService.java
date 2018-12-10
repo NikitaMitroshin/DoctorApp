@@ -13,24 +13,19 @@ import java.util.*;
 
 public class DoctorService {
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    List<Doctor> doctor1 = new ArrayList<>();
+    // большой объект, нужна 1 экземпляр за все время жизни программы, можно сделать константой
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final List<Doctor> DOCTORS = new ArrayList<>();
 
     public void addDoctorWithJson() {
         try {
-            while (true) {
-                doctor1.add(addDoctor());
-                doctor1.add(addDoctor());
-                doctor1.add(addDoctor());
-                ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
-                writer.writeValue(new File("doctors.json"), doctor1);
-                System.out.println(doctor1);
-                break;
-            }
+            DOCTORS.add(addDoctor());
+            ObjectWriter writer = OBJECT_MAPPER.writer(new DefaultPrettyPrinter());
+            writer.writeValue(new File("doctors.json"), DOCTORS);
+            System.out.println(DOCTORS);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static Doctor addDoctor() {
@@ -57,14 +52,14 @@ public class DoctorService {
     public void showDoctorWithJson() {
         try {
             byte[] file = Files.readAllBytes(Paths.get("doctors.json"));
-            List doctor = objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, Doctor.class));
+            List doctor = OBJECT_MAPPER.readValue(file, OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, Doctor.class));
             System.out.println(doctor);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public  List<Doctor> union(List<Doctor> doctors) {
+    public static List<Doctor> union(List<Doctor> doctors) {
         Set<Doctor> doctorSet = new HashSet<>();
 
         doctorSet.addAll(doctors);
@@ -85,10 +80,10 @@ public class DoctorService {
         return list;
     }
 
-    public void WriteUnion() {
+    public void writeUnion() {
         try {
             byte[] file = Files.readAllBytes(Paths.get("doctors.json"));
-            List doctor1 = objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, Doctor.class));
+            List doctor1 = OBJECT_MAPPER.readValue(file, OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, Doctor.class));
             System.out.println("Объединение множеств");
             System.out.println(new DoctorService().union(doctor1));
             System.out.println("Пересечение множеств");

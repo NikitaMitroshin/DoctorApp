@@ -23,7 +23,7 @@ public class AppDataParser {
                 service.showDoctorWithJson();
                 break;
             case 3:
-                service.WriteUnion();
+                service.writeUnion();
                 break;
             case 4:
                 break;
